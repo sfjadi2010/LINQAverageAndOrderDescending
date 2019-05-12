@@ -1,12 +1,12 @@
 async Task Main()
 {
 	var csvUrl = "https://data.cityofnewyork.us/api/views/r75y-8qe7/rows.csv?accessType=DOWNLOAD";
-	
+
 	IWebApi webApi = new WebApi(csvUrl);	
 	ICsvFileReader csvFileReader = new CsvFileReader(webApi);
 	IScoreList scoreList = new ScoreList(csvFileReader);	
 	var processData = new ProcessData(scoreList);
-	
+
 	var data = await processData.GetProcessData();
 	data.Dump();
 }
@@ -94,15 +94,15 @@ public class ScoreList: IScoreList {
 		var data = results.Trim().Split('\n');
 
 		IEnumerable<Score> scores = from scoreData in data
-									let scoreLine = scoreData.Split(',')
-									where (scoreLine[0] != "All Grades")
-									select new Score()
-									{
-										Grade = scoreLine[0],
-										Year = Convert.ToInt32(scoreLine[1]),
-										Category = scoreLine[2],
-										NumberLevelTwo = Convert.ToInt32(scoreLine[7]),
-									};
+					let scoreLine = scoreData.Split(',')
+					where (scoreLine[0] != "All Grades")
+					select new Score()
+					{
+						Grade = scoreLine[0],
+						Year = Convert.ToInt32(scoreLine[1]),
+						Category = scoreLine[2],
+						NumberLevelTwo = Convert.ToInt32(scoreLine[7]),
+					};
 
 		return scores.ToList();
 	}
